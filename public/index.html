@@ -274,16 +274,24 @@ function drawBubbles() {
     const tp = el('textPath', {href:`#${pathId}`, startOffset:'50%'});
     tp.textContent = b.title; textEl.appendChild(tp); node.appendChild(textEl);
 
-    // Float animation
-    let t = Math.random() * Math.PI * 2;
-    const ox = b.cx, oy = b.cy, amp = 8 + Math.random() * 6, spd = 0.003 + Math.random() * 0.003, ph = Math.random() * Math.PI;
+    // Bouncy physics animation
+    const bounceAmp = 14 + Math.random() * 10;
+    const gravity = 0.18, damping = 0.78;
+    let vy = -(3 + Math.random() * 2), cy2 = b.cy;
+    let vx = (Math.random() - 0.5) * 1.2, cx2 = b.cx;
+    const floorY = b.cy + bounceAmp, ceilY = b.cy - bounceAmp;
+    const wallL = b.cx - 14, wallR = b.cx + 14;
     (function anim() {
-      t += spd;
-      const nx = ox + Math.sin(t*0.8+ph)*amp, ny = oy + Math.cos(t*0.6+ph)*(amp*0.6);
-      outer.setAttribute('cx', nx); outer.setAttribute('cy', ny);
-      inner.setAttribute('cx', nx); inner.setAttribute('cy', ny);
-      emojiEl.setAttribute('x', nx); emojiEl.setAttribute('y', ny);
-      arcPath.setAttribute('d', `M ${nx-arcR} ${ny} A ${arcR} ${arcR} 0 0 1 ${nx+arcR} ${ny}`);
+      vy += gravity;
+      cy2 += vy; cx2 += vx;
+      if (cy2 >= floorY) { cy2 = floorY; vy *= -damping; vx *= 0.95; }
+      if (cy2 <= ceilY) { cy2 = ceilY; vy *= -damping; }
+      if (cx2 >= wallR) { cx2 = wallR; vx *= -damping; }
+      if (cx2 <= wallL) { cx2 = wallL; vx *= -damping; }
+      outer.setAttribute('cx', cx2); outer.setAttribute('cy', cy2);
+      inner.setAttribute('cx', cx2); inner.setAttribute('cy', cy2);
+      emojiEl.setAttribute('x', cx2); emojiEl.setAttribute('y', cy2);
+      arcPath.setAttribute('d', `M ${cx2-arcR} ${cy2} A ${arcR} ${arcR} 0 0 1 ${cx2+arcR} ${cy2}`);
       requestAnimationFrame(anim);
     })();
 
