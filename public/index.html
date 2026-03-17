@@ -276,7 +276,7 @@ function drawBubbles() {
 
     // Float animation
     let t = Math.random() * Math.PI * 2;
-    const ox = b.cx, oy = b.cy, amp = 4 + Math.random() * 3, spd = 0.003 + Math.random() * 0.003, ph = Math.random() * Math.PI;
+    const ox = b.cx, oy = b.cy, amp = 8 + Math.random() * 6, spd = 0.003 + Math.random() * 0.003, ph = Math.random() * Math.PI;
     (function anim() {
       t += spd;
       const nx = ox + Math.sin(t*0.8+ph)*amp, ny = oy + Math.cos(t*0.6+ph)*(amp*0.6);
